@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>FAQ – Abonnement {{NOM_MARCHAND}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bleu-marine: #00276A;
+            --bleu-header: #0050C8;
+            --bleu-moyen: #0060E0;
+            --bleu-clair: #00AEEF;
+            --orange: #F5821F;
+            --bg: #F4F6F9;
+            --white: #ffffff;
+            --text: #333333;
+            --muted: #6D6E71;
+            --border: #dde3ed;
+            --shadow: 0 4px 20px rgba(0, 39, 106, 0.09);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        .topbar {
+            background: var(--bleu-marine);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 24px;
+        }
+
+        .btn-payer {
+            background: var(--orange);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 9px 20px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            transition: background 0.2s, transform 0.1s;
+            display: inline-block;
+        }
+
+        .btn-payer:hover {
+            background: #e06b0a;
+            transform: translateY(-1px);
+        }
+
+        header {
+            background: linear-gradient(135deg, #0050C8 0%, #0072E8 100%);
+            color: white;
+            padding: 44px 20px 36px;
+            text-align: center;
+            border-bottom: 4px solid var(--orange);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -80px;
+            width: 300px;
+            height: 300px;
+            background: rgba(0, 174, 239, 0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -60px;
+            width: 250px;
+            height: 250px;
+            background: rgba(245, 130, 31, 0.07);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .header-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 22px;
+        }
+
+        .logo-block img {
+            height: 52px;
+            width: auto;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .logo-kreancia {
+            height: 44px !important;
+        }
+
+        .logo-separator {
+            width: 1px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        header p {
+            opacity: 0.75;
+            font-size: 15px;
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 40px auto;
+            padding: 0 20px 40px;
+        }
+
+        .welcome-block {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 26px 28px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--orange);
+        }
+
+        .welcome-block h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        .welcome-block h2 span {
+            color: var(--bleu-header);
+        }
+
+        .welcome-block p {
+            font-size: 14.5px;
+            line-height: 1.75;
+            color: #4a5568;
+        }
+
+        .nl-section {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 26px 28px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--bleu-clair);
+        }
+
+        .nl-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--bleu-header);
+            margin-bottom: 10px;
+        }
+
+        .nl-section p {
+            font-size: 14.5px;
+            line-height: 1.75;
+            color: #4a5568;
+            margin-bottom: 14px;
+        }
+
+        .nl-section ul {
+            list-style: none;
+            margin: 0 0 20px 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .nl-section ul li {
+            background: #EEF4FF;
+            color: var(--bleu-header);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .nl-section ul li span {
+            font-weight: 400;
+            color: var(--muted);
+        }
+
+        .btn-nl {
+            display: inline-block;
+            background: var(--bleu-header);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 10px 22px;
+            border-radius: 4px;
+            letter-spacing: 0.4px;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-nl:hover {
+            background: var(--bleu-moyen);
+            transform: translateY(-1px);
+        }
+
+        .faq-item {
+            background: var(--white);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid transparent;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+        }
+
+        .faq-item:hover {
+            border-left-color: var(--bleu-clair);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(0, 39, 106, 0.13);
+        }
+
+        .faq-item.active {
+            border-left-color: var(--orange);
+        }
+
+        .faq-item.active .question {
+            background: #f7faff;
+        }
+
+        .question {
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 600;
+            font-size: 15.5px;
+            padding: 17px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            user-select: none;
+            color: var(--bleu-header);
+        }
+
+        .question::after {
+            content: '+';
+            font-size: 22px;
+            color: var(--orange);
+            flex-shrink: 0;
+            transition: transform 0.3s;
+            line-height: 1;
+            font-weight: 400;
+        }
+
+        .faq-item.active .question::after {
+            transform: rotate(45deg);
+        }
+
+        .answer {
+            display: none;
+            padding: 14px 20px 18px;
+            line-height: 1.75;
+            font-size: 14.5px;
+            color: #4a5568;
+            border-top: 1px solid var(--border);
+        }
+
+        .faq-item.active .answer {
+            display: block;
+        }
+
+        .answer a {
+            color: var(--bleu-moyen);
+            text-decoration: underline;
+        }
+
+        .answer strong {
+            color: var(--bleu-header);
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: var(--white);
+            background: var(--bleu-header);
+            display: inline-block;
+            padding: 5px 14px 4px;
+            border-radius: 3px;
+            margin: 30px 0 12px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 28px 20px;
+            font-size: 13px;
+            color: var(--muted);
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn-kreancia {
+            display: inline-block;
+            background: var(--bleu-header);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 10px 22px;
+            border-radius: 4px;
+            letter-spacing: 0.4px;
+            transition: background 0.2s;
+        }
+
+        .btn-kreancia:hover {
+            background: var(--bleu-moyen);
+        }
+
+        .footer-legal {
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.6;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ============================================================ -->
+    <!--  BARRE TOP                                                    -->
+    <!-- ============================================================ -->
+    <div class="topbar">
+        <!-- ✏️ LIEN PAIEMENT : remplacer l'URL si besoin -->
+        <a href="https://kreancia.com/espace-de-paiement/" class="btn-payer" target="_blank">💳 Payez votre dette</a>
+    </div>
+
+    <!-- ============================================================ -->
+    <!--  HEADER — LOGOS                                               -->
+    <!--  ✏️ Remplacer l'URL du logo marchand (logo-marchand)          -->
+    <!-- ============================================================ -->
+    <header>
+        <div class="header-logos">
+            <div class="logo-block">
+                <!-- ✏️ LOGO MARCHAND : remplacer src par l'URL du logo du client -->
+                <img src="{{URL_LOGO_MARCHAND}}" alt="{{NOM_MARCHAND}}" />
+            </div>
+            <div class="logo-separator"></div>
+            <div class="logo-block">
+                <!-- Logo Kreancia — ne pas modifier -->
+                <img src="https://kreancia.com/wp-content/uploads/2024/08/kreanciabaselinecouleur.png" alt="Kreancia"
+                    class="logo-kreancia" />
+            </div>
+        </div>
+        <!-- ✏️ NOM_MARCHAND : nom du client (ex: Norwegian Lab) -->
+        <h1>FAQ – Abonnement {{NOM_MARCHAND}}</h1>
+        <p>Informations importantes concernant les abonnements, livraisons, facturation et vos droits en tant que client
+        </p>
+    </header>
+
+    <div class="container">
+
+        <!-- ============================================================ -->
+        <!--  BLOC BIENVENUE — ne pas modifier le texte                   -->
+        <!-- ============================================================ -->
+        <div class="welcome-block">
+            <h2>Bienvenue dans l'espace de paiement <span>KREANCIA</span></h2>
+            <p>Nous vous avons contacté afin de régulariser un impayé qui nous a été signalé par notre client
+                {{NOM_MARCHAND}}. Notre mandat consiste à vous faciliter le règlement de votre créance le plus
+                simplement et le plus rapidement possible.</p>
+        </div>
+
+        <!-- ============================================================ -->
+        <!--  PRÉSENTATION DU MARCHAND                                     -->
+        <!--  ✏️ Adapter : nom, description, produits, URL site            -->
+        <!-- ============================================================ -->
+        <div class="nl-section">
+            <h2>À propos de {{NOM_MARCHAND}}</h2>
+            <!-- ✏️ DESCRIPTION : 1-2 phrases de présentation du marchand -->
+            <p>{{DESCRIPTION_MARCHAND}}</p>
+            <!-- ✏️ PRODUITS : liste des gammes/produits du marchand -->
+            <ul>
+                <li>{{PRODUIT_1}} <span>– {{DESCRIPTION_PRODUIT_1}}</span></li>
+                <li>{{PRODUIT_2}} <span>– {{DESCRIPTION_PRODUIT_2}}</span></li>
+                <!-- Ajouter ou supprimer des <li> selon le nombre de produits -->
+            </ul>
+            <!-- ✏️ CONTEXTE : phrase de contexte sur le modèle commercial -->
+            <p>{{CONTEXTE_COMMERCIAL}}</p>
+            <!-- ✏️ URL_SITE_MARCHAND : lien vers le site du client -->
+            <a href="{{URL_SITE_MARCHAND}}" class="btn-nl" target="_blank">Site Web {{NOM_MARCHAND}} ↗</a>
+        </div>
+
+        <!-- ============================================================ -->
+        <!--  FAQ — SECTION : L'ABONNEMENT                                -->
+        <!-- ============================================================ -->
+        <div class="section-title">L'abonnement</div>
+
+        <div class="faq-item">
+            <!-- ✏️ Adapter NOM_MARCHAND dans la question si besoin -->
+            <div class="question">Qu'est-ce que l'abonnement {{NOM_MARCHAND}} ?</div>
+            <div class="answer">
+                Il s'agit d'un service de fourniture régulière de compléments alimentaires, souscrit au moment de la
+                première commande. Le client adhère à un plan de livraisons successives (généralement de 4 ou 6 mois),
+                qui se renouvelle automatiquement jusqu'à ce qu'il soit annulé de manière valide et en temps utile par
+                le client lui-même. L'engagement est de continuité et le paiement est mensuel ou global, selon le plan.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Comment la souscription est-elle formalisée ?</div>
+            <div class="answer">
+                La souscription est effectuée en ligne, via le site web de {{NOM_MARCHAND}}. La finalisation de la
+                commande
+                n'est possible qu'après que le client ait coché une case de confirmation de lecture et d'acceptation des
+                Conditions Générales. Cette acceptation constitue un contrat juridiquement contraignant conformément à
+                la Directive 2000/31/CE et à la législation française et norvégienne applicable.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Comment suis-je informé que j'ai souscrit un abonnement ?</div>
+            <div class="answer">
+                L'adhésion est communiquée au moment de l'achat initial et rappelée dans la lettre d'information incluse
+                dans la première livraison. Cette lettre explique les délais, le plan souscrit et les moyens de
+                résiliation disponibles.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Que reçois-je dans la première commande ?</div>
+            <div class="answer">
+                <!-- ✏️ PRODUIT : adapter si ce n'est pas des comprimés -->
+                Vous recevez un emballage de 30 comprimés (équivalent à un mois de fourniture), accompagné d'une lettre
+                d'information et des Conditions Générales applicables.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Et pour les livraisons suivantes ?</div>
+            <div class="answer">
+                Après la période d'essai, des livraisons pour 4 ou 6 mois sont envoyées automatiquement, selon le
+                produit. Ces livraisons sont traitées périodiquement jusqu'à annulation valide.
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!--  FAQ — SECTION : RÉSILIATION & RETOURS                       -->
+        <!-- ============================================================ -->
+        <div class="section-title">Résiliation &amp; retours</div>
+
+        <div class="faq-item">
+            <div class="question">Puis-je annuler quand je veux ?</div>
+            <div class="answer">
+                Oui, à condition de respecter le délai de préavis de 14 jours avant la date de la prochaine livraison.
+                L'annulation doit être effectuée de manière active, par email, message écrit ou via le portail client.
+                Les annulations hors délai n'empêchent pas la livraison et la facturation suivantes.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Et si je veux retourner le produit ?</div>
+            <div class="answer">
+                Seule la première livraison peut être retournée, au titre du droit légal de rétractation (14 jours après
+                réception). Les livraisons suivantes ne sont pas éligibles au retour. Retourner un produit n'annule pas
+                automatiquement la dette.
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!--  FAQ — SECTION : FACTURATION & PAIEMENT                      -->
+        <!--  ✏️ MONTANT : adapter le montant (198 €) si différent         -->
+        <!--  ✏️ DUREE : adapter la durée (4 mois) si différente           -->
+        <!--  ✏️ IBAN : remplacer par le bon IBAN                          -->
+        <!-- ============================================================ -->
+        <div class="section-title">Facturation &amp; paiement</div>
+
+        <div class="faq-item">
+            <!-- ✏️ Adapter le montant dans la question et la réponse -->
+            <div class="question">Pourquoi me facture-t-on {{MONTANT}} € ?</div>
+            <div class="answer">
+                Ce montant correspond à la totalité de l'abonnement souscrit pour {{DUREE}}. L'absence d'annulation
+                valide
+                implique le paiement de la totalité, même si le client n'a pas effectué de nouveaux paiements ni reçu de
+                nouvelles commandes (en raison d'une annulation hors délai ou d'un échec de livraison).
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Je n'ai rien reçu après la première livraison. Dois-je quand même payer ?</div>
+            <div class="answer">
+                Oui. L'absence d'annulation valide dans le délai légal et contractuel oblige au paiement total de
+                l'abonnement, quel que soit le nombre de livraisons effectivement reçues. La non-réception ultérieure
+                peut être due à des annulations hors délai ou à d'autres facteurs logistiques, qui n'annulent pas la
+                dette.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Comment puis-je régler ma dette ?</div>
+            <div class="answer">
+                Nous proposons plusieurs options de paiement pour faciliter la régularisation de votre dette. Vous
+                pouvez payer par virement bancaire sur l'IBAN <strong>{{IBAN}}</strong> (en
+                envoyant le justificatif par e-mail), ou directement via notre <a
+                    href="https://kreancia.com/espace-de-paiement/" target="_blank">espace de paiement en ligne</a>.
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!--  FAQ — SECTION : RECOUVREMENT & CADRE LÉGAL                  -->
+        <!--  ✏️ Adapter les lois selon la nationalité du marchand         -->
+        <!--     Pays européen → garder la Directive + ajouter loi locale  -->
+        <!-- ============================================================ -->
+        <div class="section-title">Recouvrement &amp; cadre légal</div>
+
+        <div class="faq-item">
+            <div class="question">Quels sont les fondements légaux du recouvrement ?</div>
+            <div class="answer">
+                Le contrat repose sur l'acceptation valide des Conditions Générales, conformément à la Directive
+                2000/31/CE. En France, s'applique la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie
+                numérique (LCEN), ainsi que le Code de la consommation pour les contrats conclus à distance.
+                <!-- ✏️ Ajouter/remplacer la loi locale du pays du marchand ci-dessous -->
+                En Norvège, la Loi n° 35/2003 – E-handelsloven. Ces textes confèrent pleine validité aux contrats
+                conclus par voie électronique.
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!--  FOOTER — ne pas modifier les mentions légales Kreancia       -->
+    <!-- ============================================================ -->
+    <footer>
+        <div class="footer-links">
+            <a href="https://kreancia.com" class="btn-kreancia" target="_blank">Site Kreancia ↗</a>
+            <a href="https://kreancia.com/espace-de-paiement/" class="btn-payer" target="_blank">💳 Payez votre
+                dette</a>
+        </div>
+        Cette page a été créée dans le but de clarifier les doutes et de répondre aux questions des débiteurs.
+        <div class="footer-legal">
+            L'entreprise KREANCIA, sis 1A rue de Bouxwiller, 67000 Strasbourg, SAS au capital de 108 000 €, immatriculée
+            au RCS de STRASBOURG sous le numéro 984 436 238. KREANCIA est une société française, membre de la FIGEC,
+            dotée du statut de société de recouvrement déclaré auprès du procureur de la république.
+        </div>
+    </footer>
+
+    <script>
+        const items = document.querySelectorAll(".faq-item");
+        items.forEach(item => {
+            item.addEventListener("click", () => {
+                item.classList.toggle("active");
+            });
+        });
+    </script>
+
+</body>
+
+</html>
