@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>KREANCIA – Générateur de FAQ Partenaire</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --primary-light: rgba(79, 70, 229, 0.15);
+            --success: #10B981;
+            --success-hover: #059669;
+            --danger: #EF4444;
+            --danger-hover: #DC2626;
+            --warning: #F59E0B;
+            --bg-app: #0F172A;
+            --bg-card: #1E293B;
+            --bg-input: #0F172A;
+            --border-color: #334155;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --sidebar-width: 480px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* App Header */
+        header.app-header {
+            height: 70px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 10;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo svg {
+            width: 32px;
+            height: 32px;
+            color: var(--primary);
+        }
+
+        .brand-logo h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-logo h1 span {
+            font-size: 11px;
+            background: var(--primary-light);
+            color: #818CF8;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Buttons styling */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            border: none;
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+        .btn-success:hover {
+            background-color: var(--success-hover);
+        }
+
+        .btn-secondary {
+            background-color: var(--border-color);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+        .btn-danger:hover {
+            background-color: var(--danger-hover);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 11.5px;
+            border-radius: 4px;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: color 0.2s, background-color 0.2s;
+        }
+        .btn-icon:hover:not(:disabled) {
+            color: var(--text-main);
+            background-color: rgba(255,255,255,0.08);
+        }
+        .btn-icon:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Main layout */
+        .app-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar Editor */
+        .editor-pane {
+            width: var(--sidebar-width);
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        /* Sub-tabs */
+        .editor-tabs {
+            display: flex;
+            background: #151D30;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 12px 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s, border-color 0.2s;
+            border-bottom: 2px solid transparent;
+            text-align: center;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Form view container */
+        .form-views {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .form-view {
+            display: none;
+        }
+
+        .form-view.active {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Controls */
+        .form-section-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            color: #818CF8;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 13.5px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.25);
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        /* Color inputs */
+        .color-picker-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 10px;
+        }
+
+        .color-picker-group input[type="color"] {
+            border: none;
+            background: none;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .color-picker-group input[type="text"] {
+            border: none;
+            padding: 0;
+            font-family: monospace;
+            background: none;
+        }
+        .color-picker-group input[type="text"]:focus {
+            box-shadow: none;
+        }
+
+        /* Dynamic list cards */
+        .card {
+            background: #151D30;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .card-header h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #818CF8;
+        }
+
+        /* FAQ specific editor UI */
+        .faq-section-card {
+            border-left: 3px solid var(--primary);
+        }
+
+        .section-header {
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .section-title-input {
+            font-weight: 700 !important;
+            font-size: 14px !important;
+            border: none !important;
+            background: none !important;
+            padding: 0 !important;
+            color: var(--text-main) !important;
+        }
+        .section-title-input:focus {
+            box-shadow: none !important;
+            background: rgba(255,255,255,0.03) !important;
+            border-radius: 4px;
+            padding-left: 6px !important;
+        }
+
+        .section-actions, .question-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .faq-question-item {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .question-header h5 {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Editor Toolbar */
+        .editor-toolbar {
+            display: flex;
+            gap: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            padding: 4px;
+        }
+
+        .editor-toolbar button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .editor-toolbar button:hover {
+            color: var(--text-main);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .editor-toolbar + textarea {
+            border-radius: 0 0 6px 6px;
+        }
+
+        /* Bottom action bar inside editor */
+        .editor-footer {
+            padding: 16px 24px;
+            background: #151D30;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        /* Preview Pane */
+        .preview-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #0B0F19;
+            overflow: hidden;
+        }
+
+        .preview-toolbar {
+            height: 50px;
+            background: #151D30;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .preview-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .device-selector {
+            display: flex;
+            background: var(--bg-input);
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            padding: 2px;
+        }
+
+        .device-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .device-btn:hover {
+            color: var(--text-main);
+        }
+
+        .device-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .preview-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow: hidden;
+            background: #090C15;
+            background-image: radial-gradient(#1e293b 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .device-wrapper {
+            background: #1E293B;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            border: 6px solid #334155;
+            transition: width 0.3s ease, height 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .device-desktop {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+            border: none;
+        }
+
+        .device-tablet {
+            width: 768px;
+            height: 100%;
+        }
+
+        .device-mobile {
+            width: 375px;
+            height: 667px;
+        }
+
+        .device-wrapper iframe {
+            border: none;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="toast" id="toast-notif">Configuration importée !</div>
+
+    <!-- HEADER DE L'APPLICATION -->
+    <header class="app-header">
+        <div class="brand-logo">
+            <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0l-1.13 4.63h5.24l-1.13-4.63zM8.32 8.75l-1.2 4.9h5.76l-1.2-4.9H8.32zm-2.07 0a1 1 0 00-.97.76l-1.5 6.13H1.75a.75.75 0 000 1.5h16.5a.75.75 0 000-1.5h-2.03l-1.5-6.13a1 1 0 00-.97-.76H6.25z" clip-rule="evenodd"></path>
+            </svg>
+            <h1>KREANCIA <span>Générateur FAQ</span></h1>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-secondary" onclick="document.getElementById('import-file-input').click()">
+                📥 Importer JSON
+            </button>
+            <input type="file" id="import-file-input" style="display: none;" accept=".json" onchange="importConfig(event)">
+            
+            <button class="btn btn-secondary" onclick="exportConfig()">
+                💾 Exporter JSON
+            </button>
+            
+            <button class="btn btn-success" onclick="downloadFAQFile()">
+                🚀 Télécharger FAQ (HTML)
+            </button>
+        </div>
+    </header>
+
+    <!-- ZONE PRINCIPALE -->
+    <div class="app-content">
+
+        <!-- PANNEAU D'ÉDITION -->
+        <div class="editor-pane">
+            
+            <!-- Onglets de navigation -->
+            <div class="editor-tabs">
+                <button class="tab-btn active" onclick="switchTab(event, 'tab-marchand')">🏢 Partenaire</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-paiement')">💰 Dette</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-design')">🎨 Style</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-faq')">❓ FAQ</button>
+            </div>
+
+            <!-- Formulaires -->
+            <div class="form-views">
+
+                <!-- 1. PARTENAIRE & PRODUITS -->
+                <div class="form-view active" id="tab-marchand">
+                    <div class="form-section-title">Informations Générales</div>
+                    <div class="form-group">
+                        <label for="p-name">Nom du Partenaire</label>
+                        <input type="text" id="p-name" oninput="updateStateField('partnerName', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label for="p-logo">URL du Logo (sur fond transparent ou blanc)</label>
+                        <input type="text" id="p-logo" oninput="updateStateField('logoUrl', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label for="p-website">Site Web Officiel (URL)</label>
+                        <input type="text" id="p-website" oninput="updateStateField('websiteUrl', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label for="p-desc">Présentation du Partenaire</label>
+                        <textarea id="p-desc" rows="3" oninput="updateStateField('description', this.value)"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="p-context">Modèle Commercial / Contexte</label>
+                        <input type="text" id="p-context" oninput="updateStateField('commercialContext', this.value)">
+                    </div>
+
+                    <div class="form-section-title" style="margin-top: 30px;">Produits Commercialisés</div>
+                    <div id="products-list">
+                        <!-- Produits générés dynamiquement en JS -->
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="addProduct()" style="width: 100%;">
+                        ＋ Ajouter un Produit
+                    </button>
+                </div>
+
+                <!-- 2. DETTE & PAIEMENT -->
+                <div class="form-view" id="tab-paiement">
+                    <div class="form-section-title">Paramètres Créance</div>
+                    <div class="form-group">
+                        <label for="p-amount">Montant Global Facturé (€)</label>
+                        <input type="number" id="p-amount" oninput="updateStateField('amount', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label for="p-duration">Durée d'Engagement (ex: 4 mois)</label>
+                        <input type="text" id="p-duration" oninput="updateStateField('duration', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label for="p-iban">IBAN pour Virement Bancaire</label>
+                        <input type="text" id="p-iban" oninput="updateStateField('iban', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label for="p-payment-url">URL de l'Espace de Paiement Kreancia</label>
+                        <input type="text" id="p-payment-url" oninput="updateStateField('paymentUrl', this.value)">
+                    </div>
+                </div>
+
+                <!-- 3. STYLE & DESIGN -->
+                <div class="form-view" id="tab-design">
+                    <div class="form-section-title">Couleurs du Partenaire</div>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">
+                        Modifiez les couleurs ci-dessous pour aligner la page FAQ avec l'identité visuelle du nouveau partenaire.
+                    </p>
+                    
+                    <div class="form-group">
+                        <label>Couleur Principale (Header, Titres, Boutons)</label>
+                        <div class="color-picker-group">
+                            <input type="color" id="c-primary" oninput="updateColorField('primary', this.value)">
+                            <input type="text" id="c-primary-hex" oninput="updateColorField('primary', this.value)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Couleur Secondaire / Accent (Bouton payer, bordure active)</label>
+                        <div class="color-picker-group">
+                            <input type="color" id="c-accent" oninput="updateColorField('accent', this.value)">
+                            <input type="text" id="c-accent-hex" oninput="updateColorField('accent', this.value)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Couleur Sombre (Topbar, Fond de logo)</label>
+                        <div class="color-picker-group">
+                            <input type="color" id="c-dark" oninput="updateColorField('dark', this.value)">
+                            <input type="text" id="c-dark-hex" oninput="updateColorField('dark', this.value)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Couleur d'Accentuation Claire (Bordure de section)</label>
+                        <div class="color-picker-group">
+                            <input type="color" id="c-light" oninput="updateColorField('light', this.value)">
+                            <input type="text" id="c-light-hex" oninput="updateColorField('light', this.value)">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-secondary btn-sm" onclick="resetToDefaults()" style="width: 100%; margin-top: 10px;">
+                        🔄 Restaurer couleurs Kreancia
+                    </button>
+                </div>
+
+                <!-- 4. FAQ SECTIONS & QUESTIONS -->
+                <div class="form-view" id="tab-faq">
+                    <div class="form-section-title">Contenu de la FAQ</div>
+                    <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 20px;">
+                        💡 Vous pouvez utiliser les tags <b>{{NOM_MARCHAND}}</b>, <b>{{MONTANT}}</b>, <b>{{DUREE}}</b>, et <b>{{IBAN}}</b>. Ils seront remplacés automatiquement lors de la génération.
+                    </p>
+                    
+                    <div id="faq-sections-list">
+                        <!-- Sections FAQ générées dynamiquement en JS -->
+                    </div>
+
+                    <button class="btn btn-primary btn-sm" onclick="addSection()" style="width: 100%; margin-top: 10px;">
+                        ＋ Créer une Nouvelle Section FAQ
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Boutons de raccourcis bas de formulaire -->
+            <div class="editor-footer">
+                <button class="btn btn-danger btn-sm" onclick="confirmReset()" style="padding: 10px 14px;">
+                    🗑️ Tout Réinitialiser
+                </button>
+                <button class="btn btn-primary" onclick="downloadFAQFile()" style="flex: 1;">
+                    🚀 Générer &amp; Télécharger
+                </button>
+            </div>
+        </div>
+
+        <!-- ZONE D'APERÇU EN DIRECT -->
+        <div class="preview-pane">
+            <div class="preview-toolbar">
+                <div class="preview-title">Aperçu en direct</div>
+                
+                <div class="device-selector">
+                    <button class="device-btn active" onclick="switchDevice(this, 'desktop')">🖥️ Ordinateur</button>
+                    <button class="device-btn" onclick="switchDevice(this, 'tablet')">📟 Tablette</button>
+                    <button class="device-btn" onclick="switchDevice(this, 'mobile')">📱 Mobile</button>
+                </div>
+                
+                <button class="btn-icon" onclick="updatePreview()" title="Recharger l'aperçu">
+                    🔄
+                </button>
+            </div>
+
+            <div class="preview-container">
+                <div class="device-wrapper device-desktop" id="device-wrapper">
+                    <iframe id="preview-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LOGIQUE DE L'APPLICATION (JAVASCRIPT) -->
+    <script>
+        // Données initiales par défaut (Norwegian Lab)
+        const defaultData = {
+            partnerName: "Norwegian Lab",
+            logoUrl: "https://s3-eu-west-1.amazonaws.com/tpd/logos/616d753c4069e86c791fc91b/0x0.png",
+            websiteUrl: "https://norwegianlab.fr/",
+            description: "Norwegian Lab est une entreprise norvégienne fondée à Oslo en 2019, spécialisée dans les compléments alimentaires et produits de bien-être. Norwegian LAB commercialise plusieurs gammes de compléments, notamment :",
+            commercialContext: "Il fonctionne avec un modèle numérique d'abonnement, actif sur plusieurs marchés européens, dont la France.",
+            products: [
+                { name: "Craveless", description: "aide à réduire les envies de sucre" },
+                { name: "T-Complex", description: "complément orienté vitalité masculine/testostérone" },
+                { name: "Sleepmore / MediNight / Metatonin Vital", description: "produits sommeil et récupération" },
+                { name: "Collagen Vital / CollaVita", description: "collagène pour articulations et peau" },
+                { name: "Mory", description: "produit lié au métabolisme et à l'appétit" }
+            ],
+            amount: "198",
+            duration: "4 mois",
+            iban: "FR76 1680 7004 3937 7438 0321 035",
+            paymentUrl: "https://kreancia.com/espace-de-paiement/",
+            colors: {
+                primary: "#0050C8",
+                accent: "#F5821F",
+                dark: "#00276A",
+                light: "#00AEEF"
+            },
+            faqSections: [
+                {
+                    title: "L'abonnement",
+                    items: [
+                        {
+                            question: "Qu'est-ce que l'abonnement {{NOM_MARCHAND}} ?",
+                            answer: "Il s'agit d'un service de fourniture régulière de compléments alimentaires, souscrit au moment de la première commande. Le client adhère à un plan de livraisons successives (généralement de {{DUREE}}), qui se renouvelle automatiquement jusqu'à ce qu'il soit annulé de manière valide et en temps utile par le client lui-même. L'engagement est de continuité et le paiement est mensuel ou global, selon le plan."
+                        },
+                        {
+                            question: "Comment la souscription est-elle formalisée ?",
+                            answer: "La souscription est effectuée en ligne, via le site web de {{NOM_MARCHAND}}. La finalisation de la commande n'est possible qu'après que le client ait coché une case de confirmation de lecture et d'acceptation des Conditions Générales. Cette acceptation constitue un contrat juridiquement contraignant conformément à la Directive 2000/31/CE et à la législation applicable."
+                        },
+                        {
+                            question: "Comment suis-je informé que j'ai souscrit un abonnement ?",
+                            answer: "L'adhésion est communiquée au moment de l'achat initial et rappelée dans la lettre d'information incluse dans la première livraison. Cette lettre explique les délais, le plan souscrit et les moyens de résiliation disponibles."
+                        },
+                        {
+                            question: "Que reçois-je dans la première commande ?",
+                            answer: "Vous recevez un emballage (équivalent à un mois de fourniture), accompagné d'une lettre d'information et des Conditions Générales applicables."
+                        },
+                        {
+                            question: "Et pour les livraisons suivantes ?",
+                            answer: "Après la période d'essai, des livraisons pour {{DUREE}} sont envoyées automatiquement. Ces livraisons sont traitées périodiquement jusqu'à annulation valide."
+                        }
+                    ]
+                },
+                {
+                    title: "Résiliation & retours",
+                    items: [
+                        {
+                            question: "Puis-je annuler quand je veux ?",
+                            answer: "Oui, à condition de respecter le délai de préavis de 14 jours avant la date de la prochaine livraison. L'annulation doit être effectuée de manière active, par email, message écrit ou via le portail client. Les annulations hors délai n'empêchent pas la livraison et la facturation suivantes."
+                        },
+                        {
+                            question: "Et si je veux retourner le produit ?",
+                            answer: "Seule la première livraison peut être retournée, au titre du droit légal de rétractation (14 jours après réception). Les livraisons suivantes ne sont pas éligibles au retour. Retourner un produit n'annule pas automatiquement la dette."
+                        }
+                    ]
+                },
+                {
+                    title: "Facturation & paiement",
+                    items: [
+                        {
+                            question: "Pourquoi me facture-t-on {{MONTANT}} € ?",
+                            answer: "Ce montant correspond à la totalité de l'abonnement souscrit pour {{DUREE}}. L'absence d'annulation valide implique le paiement de la totalité, même si le client n'a pas effectué de nouveaux paiements ni reçu de nouvelles commandes (en raison d'une annulation hors délai ou d'un échec de livraison)."
+                        },
+                        {
+                            question: "Je n'ai rien reçu après la première livraison. Dois-je quand même payer ?",
+                            answer: "Oui. L'absence d'annulation valide dans le délai légal et contractuel oblige au paiement total de l'abonnement, quel que soit le nombre de livraisons effectivement reçues. La non-réception ultérieure peut être due à des annulations hors délai ou à d'autres facteurs logistiques, qui n'annulent pas la dette."
+                        },
+                        {
+                            question: "Comment puis-je régler ma dette ?",
+                            answer: "Nous proposons plusieurs options de paiement pour faciliter la régularisation de votre dette. Vous pouvez payer par virement bancaire sur l'IBAN <strong>{{IBAN}}</strong> (en envoyant le justificatif par e-mail), ou directement via notre <a href=\"{{PAYMENT_URL}}\" target=\"_blank\">espace de paiement en ligne</a>."
+                        }
+                    ]
+                },
+                {
+                    title: "Recouvrement & cadre légal",
+                    items: [
+                        {
+                            question: "Quels sont les fondements légaux du recouvrement ?",
+                            answer: "Le contrat repose sur l'acceptation valide des Conditions Générales, conformément à la Directive 2000/31/CE. En France, s'applique la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique (LCEN), ainsi que le Code de la consommation pour les contrats conclus à distance. Ces textes confèrent pleine validité aux contrats conclus par voie électronique."
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Copie de travail de l'état
+        let state = JSON.parse(JSON.stringify(defaultData));
+
+        // Initialisation de la page
+        window.addEventListener('DOMContentLoaded', () => {
+            syncFormFieldsFromState();
+            renderProducts();
+            renderFaq();
+            updatePreview();
+        });
+
+        // Synchroniser les champs simples du formulaire à partir de l'état
+        function syncFormFieldsFromState() {
+            document.getElementById('p-name').value = state.partnerName;
+            document.getElementById('p-logo').value = state.logoUrl;
+            document.getElementById('p-website').value = state.websiteUrl;
+            document.getElementById('p-desc').value = state.description;
+            document.getElementById('p-context').value = state.commercialContext;
+            
+            document.getElementById('p-amount').value = state.amount;
+            document.getElementById('p-duration').value = state.duration;
+            document.getElementById('p-iban').value = state.iban;
+            document.getElementById('p-payment-url').value = state.paymentUrl;
+            
+            syncColorsInForm();
+        }
+
+        function syncColorsInForm() {
+            document.getElementById('c-primary').value = state.colors.primary;
+            document.getElementById('c-primary-hex').value = state.colors.primary;
+            document.getElementById('c-accent').value = state.colors.accent;
+            document.getElementById('c-accent-hex').value = state.colors.accent;
+            document.getElementById('c-dark').value = state.colors.dark;
+            document.getElementById('c-dark-hex').value = state.colors.dark;
+            document.getElementById('c-light').value = state.colors.light;
+            document.getElementById('c-light-hex').value = state.colors.light;
+        }
+
+        // Navigation par onglets
+        function switchTab(event, tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.form-view').forEach(view => view.classList.remove('active'));
+            
+            event.currentTarget.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Gestion de l'état
+        function updateStateField(field, value) {
+            state[field] = value;
+            updatePreview();
+        }
+
+        function updateColorField(key, value) {
+            state.colors[key] = value;
+            document.getElementById(`c-${key}`).value = value;
+            document.getElementById(`c-${key}-hex`).value = value;
+            updatePreview();
+        }
+
+        function resetToDefaults() {
+            state.colors = {
+                primary: "#0050C8",
+                accent: "#F5821F",
+                dark: "#00276A",
+                light: "#00AEEF"
+            };
+            syncColorsInForm();
+            updatePreview();
+            showNotification("Couleurs d'origine restaurées !");
+        }
+
+        function confirmReset() {
+            if (confirm("Voulez-vous vraiment réinitialiser toutes les données aux valeurs par défaut ? Vos modifications en cours seront perdues.")) {
+                state = JSON.parse(JSON.stringify(defaultData));
+                syncFormFieldsFromState();
+                renderProducts();
+                renderFaq();
+                updatePreview();
+                showNotification("Toutes les données ont été réinitialisées !");
+            }
+        }
+
+        // --- GESTION DES PRODUITS ---
+        function renderProducts() {
+            const container = document.getElementById('products-list');
+            container.innerHTML = '';
+            
+            state.products.forEach((prod, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h4>Produit ${index + 1}</h4>
+                        <button class="btn-icon btn-danger" onclick="removeProduct(${index})" title="Supprimer ce produit">🗑️</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Nom de la gamme / du produit</label>
+                        <input type="text" value="${escapeHtml(prod.name)}" oninput="updateProduct(${index}, 'name', this.value)" placeholder="ex: Craveless">
+                    </div>
+                    <div class="form-group">
+                        <label>Description du produit</label>
+                        <input type="text" value="${escapeHtml(prod.description)}" oninput="updateProduct(${index}, 'description', this.value)" placeholder="ex: aide à réduire les envies de sucre">
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addProduct() {
+            state.products.push({ name: "", description: "" });
+            renderProducts();
+            updatePreview();
+        }
+
+        function updateProduct(index, field, value) {
+            state.products[index][field] = value;
+            updatePreview();
+        }
+
+        function removeProduct(index) {
+            state.products.splice(index, 1);
+            renderProducts();
+            updatePreview();
+        }
+
+        // --- GESTION DES FAQ ---
+        function renderFaq() {
+            const container = document.getElementById('faq-sections-list');
+            container.innerHTML = '';
+            
+            state.faqSections.forEach((section, sIndex) => {
+                const sectionCard = document.createElement('div');
+                sectionCard.className = 'faq-section-card card';
+                
+                let questionsHtml = '';
+                section.items.forEach((item, qIndex) => {
+                    questionsHtml += `
+                        <div class="faq-question-item">
+                            <div class="question-header">
+                                <h5>Question ${qIndex + 1}</h5>
+                                <div class="question-actions">
+                                    <button class="btn-icon" onclick="moveQuestion(${sIndex}, ${qIndex}, -1)" ${qIndex === 0 ? 'disabled' : ''} title="Monter">▲</button>
+                                    <button class="btn-icon" onclick="moveQuestion(${sIndex}, ${qIndex}, 1)" ${qIndex === section.items.length - 1 ? 'disabled' : ''} title="Descendre">▼</button>
+                                    <button class="btn-icon btn-danger" onclick="removeQuestion(${sIndex}, ${qIndex})" title="Supprimer la question">🗑️</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Intitulé de la question</label>
+                                <input type="text" value="${escapeHtml(item.question)}" oninput="updateQuestion(${sIndex}, ${qIndex}, 'question', this.value)" placeholder="ex: Comment puis-je résilier ?">
+                            </div>
+                            <div class="form-group">
+                                <label>Réponse explicative</label>
+                                <div class="editor-toolbar">
+                                    <button onclick="insertTag(${sIndex}, ${qIndex}, 'strong')" title="Mettre le texte sélectionné en gras"><b>Gras</b></button>
+                                    <button onclick="insertTag(${sIndex}, ${qIndex}, 'a')" title="Insérer un lien cliquable">🔗 Lien</button>
+                                    <button onclick="insertTag(${sIndex}, ${qIndex}, 'br')" title="Insérer un saut de ligne standard">↵ Ligne</button>
+                                </div>
+                                <textarea id="faq-ans-${sIndex}-${qIndex}" rows="3" oninput="updateQuestion(${sIndex}, ${qIndex}, 'answer', this.value)" placeholder="Saisissez la réponse détaillée...">${escapeHtml(item.answer)}</textarea>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                sectionCard.innerHTML = `
+                    <div class="card-header section-header">
+                        <input type="text" class="section-title-input" value="${escapeHtml(section.title)}" oninput="updateSectionTitle(${sIndex}, this.value)" placeholder="Titre de la section (ex: Résiliation)">
+                        <div class="section-actions">
+                            <button class="btn-icon" onclick="moveSection(${sIndex}, -1)" ${sIndex === 0 ? 'disabled' : ''} title="Monter la section">▲</button>
+                            <button class="btn-icon" onclick="moveSection(${sIndex}, 1)" ${sIndex === state.faqSections.length - 1 ? 'disabled' : ''} title="Descendre la section">▼</button>
+                            <button class="btn-icon btn-danger" onclick="removeSection(${sIndex})" title="Supprimer la section">🗑️ Section</button>
+                        </div>
+                    </div>
+                    <div class="faq-questions-list">
+                        ${questionsHtml}
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="addQuestion(${sIndex})" style="margin-top: 12px; width: 100%;">
+                        ＋ Ajouter une Question
+                    </button>
+                `;
+                container.appendChild(sectionCard);
+            });
+        }
+
+        function updateSectionTitle(sIndex, value) {
+            state.faqSections[sIndex].title = value;
+            updatePreview();
+        }
+
+        function addSection() {
+            state.faqSections.push({ title: "Nouvelle Section", items: [] });
+            renderFaq();
+            updatePreview();
+        }
+
+        function removeSection(sIndex) {
+            if (confirm(`Voulez-vous vraiment supprimer la section "${state.faqSections[sIndex].title}" et toutes ses questions ?`)) {
+                state.faqSections.splice(sIndex, 1);
+                renderFaq();
+                updatePreview();
+            }
+        }
+
+        function moveSection(sIndex, direction) {
+            const targetIndex = sIndex + direction;
+            if (targetIndex < 0 || targetIndex >= state.faqSections.length) return;
+            const temp = state.faqSections[sIndex];
+            state.faqSections[sIndex] = state.faqSections[targetIndex];
+            state.faqSections[targetIndex] = temp;
+            renderFaq();
+            updatePreview();
+        }
+
+        function updateQuestion(sIndex, qIndex, field, value) {
+            state.faqSections[sIndex].items[qIndex][field] = value;
+            updatePreview();
+        }
+
+        function addQuestion(sIndex) {
+            state.faqSections[sIndex].items.push({ question: "Nouvelle Question ?", answer: "" });
+            renderFaq();
+            updatePreview();
+        }
+
+        function removeQuestion(sIndex, qIndex) {
+            state.faqSections[sIndex].items.splice(qIndex, 1);
+            renderFaq();
+            updatePreview();
+        }
+
+        function moveQuestion(sIndex, qIndex, direction) {
+            const targetIndex = qIndex + direction;
+            const items = state.faqSections[sIndex].items;
+            if (targetIndex < 0 || targetIndex >= items.length) return;
+            const temp = items[qIndex];
+            items[qIndex] = items[targetIndex];
+            items[targetIndex] = temp;
+            renderFaq();
+            updatePreview();
+        }
+
+        // Outils d'aide pour insérer des balises HTML dans le textarea
+        function insertTag(sIndex, qIndex, tag) {
+            const textarea = document.getElementById(`faq-ans-${sIndex}-${qIndex}`);
+            if (!textarea) return;
+            
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+            const selectedText = text.substring(start, end);
+            
+            let replacement = "";
+            if (tag === 'strong') {
+                replacement = `<strong>${selectedText || 'texte en gras'}</strong>`;
+            } else if (tag === 'a') {
+                const url = prompt("Entrez l'URL de redirection :", "https://");
+                if (url === null) return;
+                replacement = `<a href="${url}" target="_blank">${selectedText || 'lien cliquable'}</a>`;
+            } else if (tag === 'br') {
+                replacement = `${selectedText}<br>\n`;
+            }
+            
+            textarea.value = text.substring(0, start) + replacement + text.substring(end);
+            
+            // Mise à jour de l'état
+            state.faqSections[sIndex].items[qIndex].answer = textarea.value;
+            
+            // Remise du focus et placement du curseur
+            textarea.focus();
+            textarea.selectionStart = start + replacement.length;
+            textarea.selectionEnd = start + replacement.length;
+            
+            updatePreview();
+        }
+
+        // --- APERÇU EN DIRECT & TÉLÉCHARGEMENT ---
+
+        // Switcher de résolution de périphérique
+        function switchDevice(btn, mode) {
+            document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const wrapper = document.getElementById('device-wrapper');
+            wrapper.className = 'device-wrapper';
+            
+            if (mode === 'desktop') {
+                wrapper.classList.add('device-desktop');
+            } else if (mode === 'tablet') {
+                wrapper.classList.add('device-tablet');
+            } else if (mode === 'mobile') {
+                wrapper.classList.add('device-mobile');
+            }
+        }
+
+        // Notification visuelle
+        function showNotification(msg) {
+            const toast = document.getElementById('toast-notif');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Fonction pour assombrir/éclaircir une couleur hex
+        function adjustColorBrightness(hex, percent) {
+            let R = parseInt(hex.substring(1, 3), 16);
+            let G = parseInt(hex.substring(3, 5), 16);
+            let B = parseInt(hex.substring(5, 7), 16);
+
+            R = parseInt(R * (100 + percent) / 100);
+            G = parseInt(G * (100 + percent) / 100);
+            B = parseInt(B * (100 + percent) / 100);
+
+            R = (R < 255) ? R : 255;
+            G = (G < 255) ? G : 255;
+            B = (B < 255) ? B : 255;
+
+            const rHex = R.toString(16).padStart(2, '0');
+            const gHex = G.toString(16).padStart(2, '0');
+            const bHex = B.toString(16).padStart(2, '0');
+
+            return `#${rHex}${gHex}${bHex}`;
+        }
+
+        // Remplacement dynamique des variables dans les chaînes de caractères
+        function interpolate(text) {
+            if (!text) return '';
+            return text
+                .replaceAll('{{NOM_MARCHAND}}', state.partnerName)
+                .replaceAll('{{MONTANT}}', state.amount)
+                .replaceAll('{{DUREE}}', state.duration)
+                .replaceAll('{{IBAN}}', state.iban)
+                .replaceAll('{{PAYMENT_URL}}', state.paymentUrl);
+        }
+
+        // Compilateur HTML
+        function buildFAQPageHTML() {
+            const p = state;
+            const primary = p.colors.primary;
+            const accent = p.colors.accent;
+            const dark = p.colors.dark;
+            const light = p.colors.light;
+            const middle = adjustColorBrightness(primary, 15);
+            
+            // Construction des listes de produits
+            const productsListHtml = p.products.map(prod => `
+                <li>${escapeHtml(interpolate(prod.name))} <span>– ${escapeHtml(interpolate(prod.description))}</span></li>`).join('');
+                        
+            // Construction des sections FAQ
+            const faqSectionsHtml = p.faqSections.map(sec => {
+                const itemsHtml = sec.items.map(item => `
+        <div class="faq-item">
+            <div class="question">${escapeHtml(interpolate(item.question))}</div>
+            <div class="answer">
+                ${interpolate(item.answer)}
+            </div>
+        </div>`).join('\n        ');
+                
+                return `
+        <div class="section-title">${escapeHtml(interpolate(sec.title))}</div>
+        ${itemsHtml}`;
+            }).join('\n');
+
+            return `<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>FAQ – Abonnement ${escapeHtml(p.partnerName)}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bleu-marine: ${dark};
+            --bleu-header: ${primary};
+            --bleu-moyen: ${middle};
+            --bleu-clair: ${light};
+            --orange: ${accent};
+            --bg: #F4F6F9;
+            --white: #ffffff;
+            --text: #333333;
+            --muted: #6D6E71;
+            --border: #dde3ed;
+            --shadow: 0 4px 20px rgba(0, 39, 106, 0.09);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        /* Barre top avec bouton payer */
+        .topbar {
+            background: var(--bleu-marine);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 24px;
+        }
+
+        .btn-payer {
+            background: var(--orange);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 9px 20px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            transition: background 0.2s, transform 0.1s;
+            display: inline-block;
+        }
+
+        .btn-payer:hover {
+            background: #e06b0a;
+            transform: translateY(-1px);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--bleu-header) 0%, var(--bleu-moyen) 100%);
+            color: white;
+            padding: 44px 20px 36px;
+            text-align: center;
+            border-bottom: 4px solid var(--orange);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -80px;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -60px;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .header-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 22px;
+        }
+
+        .logo-block img {
+            height: 52px;
+            width: auto;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .logo-kreancia {
+            height: 44px !important;
+        }
+
+        .logo-separator {
+            width: 1px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        header p {
+            opacity: 0.85;
+            font-size: 15px;
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 40px auto;
+            padding: 0 20px 40px;
+        }
+
+        /* Section présentation */
+        .nl-section {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 26px 28px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--bleu-clair);
+        }
+
+        .nl-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--bleu-header);
+            margin-bottom: 10px;
+        }
+
+        .nl-section p {
+            font-size: 14.5px;
+            line-height: 1.75;
+            color: #4a5568;
+            margin-bottom: 14px;
+        }
+
+        .nl-section ul {
+            list-style: none;
+            margin: 0 0 20px 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .nl-section ul li {
+            background: #EEF4FF;
+            color: var(--bleu-header);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .nl-section ul li span {
+            font-weight: 400;
+            color: var(--muted);
+        }
+
+        .btn-nl {
+            display: inline-block;
+            background: var(--bleu-header);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 10px 22px;
+            border-radius: 4px;
+            letter-spacing: 0.4px;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-nl:hover {
+            background: var(--bleu-moyen);
+            transform: translateY(-1px);
+        }
+
+        /* FAQ */
+        .faq-item {
+            background: var(--white);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid transparent;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+        }
+
+        .faq-item:hover {
+            border-left-color: var(--bleu-clair);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(0, 39, 106, 0.13);
+        }
+
+        .faq-item.active {
+            border-left-color: var(--orange);
+        }
+
+        .faq-item.active .question {
+            background: #f7faff;
+        }
+
+        .question {
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 600;
+            font-size: 15.5px;
+            padding: 17px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            user-select: none;
+            color: var(--bleu-header);
+        }
+
+        .question::after {
+            content: '+';
+            font-size: 22px;
+            color: var(--orange);
+            flex-shrink: 0;
+            transition: transform 0.3s;
+            line-height: 1;
+            font-weight: 400;
+        }
+
+        .faq-item.active .question::after {
+            transform: rotate(45deg);
+        }
+
+        .answer {
+            display: none;
+            padding: 14px 20px 18px;
+            line-height: 1.75;
+            font-size: 14.5px;
+            color: #4a5568;
+            border-top: 1px solid var(--border);
+        }
+
+        .faq-item.active .answer {
+            display: block;
+        }
+
+        .answer a {
+            color: var(--bleu-moyen);
+            text-decoration: underline;
+        }
+
+        .answer strong {
+            color: var(--bleu-header);
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: var(--white);
+            background: var(--bleu-header);
+            display: inline-block;
+            padding: 5px 14px 4px;
+            border-radius: 3px;
+            margin: 30px 0 12px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 28px 20px;
+            font-size: 13px;
+            color: var(--muted);
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn-kreancia {
+            display: inline-block;
+            background: var(--bleu-header);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 10px 22px;
+            border-radius: 4px;
+            letter-spacing: 0.4px;
+            transition: background 0.2s;
+        }
+
+        .btn-kreancia:hover {
+            background: var(--bleu-moyen);
+        }
+
+        /* Bloc bienvenue espace de paiement */
+        .welcome-block {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 26px 28px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--orange);
+        }
+
+        .welcome-block h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        .welcome-block h2 span {
+            color: var(--bleu-header);
+        }
+
+        .welcome-block p {
+            font-size: 14.5px;
+            line-height: 1.75;
+            color: #4a5568;
+        }
+
+        /* Mentions légales footer */
+        .footer-legal {
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.6;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">
+        <a href="${escapeHtml(p.paymentUrl)}" class="btn-payer" target="_blank">💳 Payez votre dette</a>
+    </div>
+
+    <header>
+        <div class="header-logos">
+            <div class="logo-block">
+                <img src="${escapeHtml(p.logoUrl)}" alt="${escapeHtml(p.partnerName)}" />
+            </div>
+            <div class="logo-separator"></div>
+            <div class="logo-block">
+                <img src="https://kreancia.com/wp-content/uploads/2024/08/kreanciabaselinecouleur.png" alt="Kreancia"
+                    class="logo-kreancia" />
+            </div>
+        </div>
+        <h1>FAQ – Abonnement ${escapeHtml(p.partnerName)}</h1>
+        <p>Informations importantes concernant les abonnements, livraisons, facturation et vos droits en tant que client</p>
+    </header>
+
+    <div class="container">
+
+        <div class="welcome-block">
+            <h2>Bienvenue dans l'espace de paiement <span>KREANCIA - ${escapeHtml(p.partnerName.toUpperCase())}</span></h2>
+            <p>Nous vous avons contacté afin de régulariser un impayé qui nous a été signalé par notre client ${escapeHtml(p.partnerName)}. Notre mandat consiste à vous faciliter le règlement de votre créance le plus simplement et le plus rapidement possible.</p>
+        </div>
+
+        <div class="nl-section">
+            <h2>À propos de ${escapeHtml(p.partnerName)}</h2>
+            <p>${escapeHtml(p.description)}</p>
+            <ul>${productsListHtml}
+            </ul>
+            <p>${escapeHtml(p.commercialContext)}</p>
+            <a href="${escapeHtml(p.websiteUrl)}" class="btn-nl" target="_blank">Site Web ${escapeHtml(p.partnerName)} ↗</a>
+        </div>
+        ${faqSectionsHtml}
+
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://kreancia.com" class="btn-kreancia" target="_blank">Site Kreancia ↗</a>
+            <a href="${escapeHtml(p.paymentUrl)}" class="btn-payer" target="_blank">💳 Payez votre dette</a>
+        </div>
+        Cette page a été créée dans le but de clarifier les doutes et de répondre aux questions des débiteurs.
+
+        <div class="footer-legal">
+            L'entreprise KREANCIA, sis 1A rue de Bouxwiller, 67000 Strasbourg, SAS au capital de 108 000 €, immatriculée
+            au RCS de STRASBOURG sous le numéro 984 436 238. KREANCIA est une société française, membre de la FIGEC,
+            dotée du statut de société de recouvrement déclaré auprès du procureur de la république.
+        </div>
+    </footer>
+
+    <script>
+        const items = document.querySelectorAll(".faq-item");
+        items.forEach(item => {
+            item.addEventListener("click", () => {
+                item.classList.toggle("active");
+            });
+        });
+    <\/script>
+
+</body>
+
+</html>`;
+        }
+
+        // Mettre à jour l'iframe d'aperçu
+        function updatePreview() {
+            const iframe = document.getElementById('preview-iframe');
+            const htmlContent = buildFAQPageHTML();
+            
+            // Écriture dynamique du contenu dans l'iframe
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            doc.open();
+            doc.write(htmlContent);
+            doc.close();
+        }
+
+        // Déclencher le téléchargement du fichier HTML autonome
+        function downloadFAQFile() {
+            const htmlContent = buildFAQPageHTML();
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8;' });
+            
+            const filename = `faq-${state.partnerName.toLowerCase().replace(/[^a-z0-9]/g, '-')}.html`;
+            
+            const link = document.createElement("a");
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showNotification("Fichier HTML téléchargé avec succès !");
+            }
+        }
+
+        // --- EXPORT / IMPORT CONFIGURATION JSON ---
+        function exportConfig() {
+            const dataStr = JSON.stringify(state, null, 4);
+            const blob = new Blob([dataStr], { type: 'application/json;charset=utf-8;' });
+            
+            const filename = `config-faq-${state.partnerName.toLowerCase().replace(/[^a-z0-9]/g, '-')}.json`;
+            
+            const link = document.createElement("a");
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showNotification("Configuration JSON exportée !");
+            }
+        }
+
+        function importConfig(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    // Validation basique
+                    if (importedData.partnerName && importedData.faqSections && importedData.colors) {
+                        state = importedData;
+                        syncFormFieldsFromState();
+                        renderProducts();
+                        renderFaq();
+                        updatePreview();
+                        showNotification("Configuration JSON importée !");
+                    } else {
+                        alert("Format de fichier incorrect. Assurez-vous d'importer un fichier JSON valide exporté par cet outil.");
+                    }
+                } catch (error) {
+                    alert("Erreur de lecture du fichier JSON : " + error.message);
+                }
+            };
+            reader.readAsText(file);
+            
+            // Reset input so it triggers again on same file
+            event.target.value = '';
+        }
+
+        // --- OUTILS DE SÉCURITÉ / DIVERS ---
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+
+</html>
