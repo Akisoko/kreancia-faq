@@ -42,8 +42,8 @@
             flex-direction: column;
         }
 
-        /* Toast notification */
         .toast {
+
             position: fixed;
             top: 20px;
             right: 20px;
@@ -64,8 +64,8 @@
             transform: translateY(0);
         }
 
-        /* App Header */
         header.app-header {
+
             height: 70px;
             background: var(--bg-card);
             border-bottom: 1px solid var(--border-color);
@@ -113,8 +113,8 @@
             gap: 12px;
         }
 
-        /* Buttons styling */
         .btn {
+
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -187,15 +187,15 @@
             cursor: not-allowed;
         }
 
-        /* Main layout */
         .app-content {
+
             display: flex;
             flex: 1;
             overflow: hidden;
         }
 
-        /* Sidebar Editor */
         .editor-pane {
+
             width: var(--sidebar-width);
             background: var(--bg-card);
             border-right: 1px solid var(--border-color);
@@ -205,8 +205,8 @@
             flex-shrink: 0;
         }
 
-        /* Sub-tabs */
         .editor-tabs {
+
             display: flex;
             background: #151D30;
             border-bottom: 1px solid var(--border-color);
@@ -235,8 +235,8 @@
             border-bottom-color: var(--primary);
         }
 
-        /* Form view container */
         .form-views {
+
             flex: 1;
             overflow-y: auto;
             padding: 24px;
@@ -256,8 +256,8 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Form Controls */
         .form-section-title {
+
             font-size: 14px;
             font-weight: 700;
             text-transform: uppercase;
@@ -312,8 +312,8 @@
             resize: vertical;
         }
 
-        /* Color inputs */
         .color-picker-group {
+
             display: flex;
             align-items: center;
             gap: 10px;
@@ -342,8 +342,8 @@
             box-shadow: none;
         }
 
-        /* Dynamic list cards */
         .card {
+
             background: #151D30;
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -367,8 +367,8 @@
             color: #818CF8;
         }
 
-        /* FAQ specific editor UI */
         .faq-section-card {
+
             border-left: 3px solid var(--primary);
         }
 
@@ -419,8 +419,8 @@
             color: var(--text-muted);
         }
 
-        /* Editor Toolbar */
         .editor-toolbar {
+
             display: flex;
             gap: 6px;
             background: var(--bg-card);
@@ -450,8 +450,8 @@
             border-radius: 0 0 6px 6px;
         }
 
-        /* Bottom action bar inside editor */
         .editor-footer {
+
             padding: 16px 24px;
             background: #151D30;
             border-top: 1px solid var(--border-color);
@@ -460,8 +460,8 @@
             gap: 12px;
         }
 
-        /* Preview Pane */
         .preview-pane {
+
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -563,6 +563,74 @@
             background: #fff;
             flex: 1;
         }
+
+        .modal-overlay {
+
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 550px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #818CF8;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .modal-body p {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .link-copy-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .link-input {
+            flex: 1;
+            background: var(--bg-input) !important;
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 13px;
+            font-family: monospace;
+        }
     </style>
 </head>
 
@@ -570,8 +638,26 @@
 
     <div class="toast" id="toast-notif">Configuration importée !</div>
 
-    <!-- HEADER DE L'APPLICATION -->
+    <div class="modal-overlay" id="publish-modal">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Page FAQ Publiée !</h3>
+                <button class="btn-icon" onclick="closePublishModal()" style="font-size: 20px;">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>La FAQ pour le partenaire <b><span id="pub-partner-name"></span></b> est désormais en ligne et accessible via le lien dynamique ci-dessous :</p>
+                <div class="link-copy-container">
+                    <input type="text" class="link-input" id="pub-link-input" readonly>
+                    <button class="btn btn-primary" onclick="copyPublishedLink()">📋 Copier</button>
+                </div>
+                <p style="font-size: 11.5px; margin-bottom: 0;">Vous pouvez partager ce lien directement avec votre partenaire ou vos clients.</p>
+            </div>
+        </div>
+    </div>
+
     <header class="app-header">
+
         <div class="brand-logo">
             <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0l-1.13 4.63h5.24l-1.13-4.63zM8.32 8.75l-1.2 4.9h5.76l-1.2-4.9H8.32zm-2.07 0a1 1 0 00-.97.76l-1.5 6.13H1.75a.75.75 0 000 1.5h16.5a.75.75 0 000-1.5h-2.03l-1.5-6.13a1 1 0 00-.97-.76H6.25z" clip-rule="evenodd"></path>
@@ -580,6 +666,10 @@
         </div>
 
         <div class="action-buttons">
+            <a href="liste.php" class="btn btn-secondary">
+                📋 Liste des FAQs
+            </a>
+            
             <button class="btn btn-secondary" onclick="document.getElementById('import-file-input').click()">
                 📥 Importer JSON
             </button>
@@ -588,6 +678,10 @@
             <button class="btn btn-secondary" onclick="exportConfig()">
                 💾 Exporter JSON
             </button>
+
+            <button class="btn btn-primary" onclick="publishConfigToServer()">
+                ☁️ Publier en ligne
+            </button>
             
             <button class="btn btn-success" onclick="downloadFAQFile()">
                 🚀 Télécharger FAQ (HTML)
@@ -595,25 +689,25 @@
         </div>
     </header>
 
-    <!-- ZONE PRINCIPALE -->
     <div class="app-content">
 
-        <!-- PANNEAU D'ÉDITION -->
+
         <div class="editor-pane">
+
             
-            <!-- Onglets de navigation -->
             <div class="editor-tabs">
+
                 <button class="tab-btn active" onclick="switchTab(event, 'tab-marchand')">🏢 Partenaire</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-paiement')">💰 Dette</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-design')">🎨 Style</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-faq')">❓ FAQ</button>
             </div>
 
-            <!-- Formulaires -->
             <div class="form-views">
 
-                <!-- 1. PARTENAIRE & PRODUITS -->
+
                 <div class="form-view active" id="tab-marchand">
+
                     <div class="form-section-title">Informations Générales</div>
                     <div class="form-group">
                         <label for="p-name">Nom du Partenaire</label>
@@ -638,15 +732,14 @@
 
                     <div class="form-section-title" style="margin-top: 30px;">Produits Commercialisés</div>
                     <div id="products-list">
-                        <!-- Produits générés dynamiquement en JS -->
-                    </div>
+
                     <button class="btn btn-secondary btn-sm" onclick="addProduct()" style="width: 100%;">
                         ＋ Ajouter un Produit
                     </button>
                 </div>
 
-                <!-- 2. DETTE & PAIEMENT -->
                 <div class="form-view" id="tab-paiement">
+
                     <div class="form-section-title">Paramètres Créance</div>
                     <div class="form-group">
                         <label for="p-amount">Montant Global Facturé (€)</label>
@@ -666,8 +759,8 @@
                     </div>
                 </div>
 
-                <!-- 3. STYLE & DESIGN -->
                 <div class="form-view" id="tab-design">
+
                     <div class="form-section-title">Couleurs du Partenaire</div>
                     <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">
                         Modifiez les couleurs ci-dessous pour aligner la page FAQ avec l'identité visuelle du nouveau partenaire.
@@ -710,16 +803,16 @@
                     </button>
                 </div>
 
-                <!-- 4. FAQ SECTIONS & QUESTIONS -->
                 <div class="form-view" id="tab-faq">
+
                     <div class="form-section-title">Contenu de la FAQ</div>
                     <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 20px;">
                         💡 Vous pouvez utiliser les tags <b>{{NOM_MARCHAND}}</b>, <b>{{MONTANT}}</b>, <b>{{DUREE}}</b>, et <b>{{IBAN}}</b>. Ils seront remplacés automatiquement lors de la génération.
                     </p>
                     
                     <div id="faq-sections-list">
-                        <!-- Sections FAQ générées dynamiquement en JS -->
                     </div>
+
 
                     <button class="btn btn-primary btn-sm" onclick="addSection()" style="width: 100%; margin-top: 10px;">
                         ＋ Créer une Nouvelle Section FAQ
@@ -728,18 +821,20 @@
 
             </div>
 
-            <!-- Boutons de raccourcis bas de formulaire -->
             <div class="editor-footer">
-                <button class="btn btn-danger btn-sm" onclick="confirmReset()" style="padding: 10px 14px;">
-                    🗑️ Tout Réinitialiser
+
+                <button class="btn btn-danger btn-sm" onclick="confirmReset()" style="padding: 10px 14px;" title="Tout réinitialiser par défaut">
+                    🗑️ Réinitialiser
                 </button>
-                <button class="btn btn-primary" onclick="downloadFAQFile()" style="flex: 1;">
-                    🚀 Générer &amp; Télécharger
+                <button class="btn btn-primary" onclick="publishConfigToServer()" style="flex: 1;" title="Enregistrer et publier sur le serveur">
+                    ☁️ Publier en ligne
+                </button>
+                <button class="btn btn-success btn-sm" onclick="downloadFAQFile()" title="Télécharger le fichier HTML autonome">
+                    🚀 Télécharger HTML
                 </button>
             </div>
         </div>
 
-        <!-- ZONE D'APERÇU EN DIRECT -->
         <div class="preview-pane">
             <div class="preview-toolbar">
                 <div class="preview-title">Aperçu en direct</div>
@@ -764,10 +859,10 @@
 
     </div>
 
-    <!-- LOGIQUE DE L'APPLICATION (JAVASCRIPT) -->
     <script>
-        // Données initiales par défaut (Norwegian Lab)
+
         const defaultData = {
+
             partnerName: "Norwegian Lab",
             logoUrl: "https://s3-eu-west-1.amazonaws.com/tpd/logos/616d753c4069e86c791fc91b/0x0.png",
             websiteUrl: "https://norwegianlab.fr/",
@@ -858,19 +953,36 @@
             ]
         };
 
-        // Copie de travail de l'état
         let state = JSON.parse(JSON.stringify(defaultData));
 
-        // Initialisation de la page
-        window.addEventListener('DOMContentLoaded', () => {
+
+        window.addEventListener('DOMContentLoaded', async () => {
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const partnerSlug = urlParams.get('partner');
+            if (partnerSlug) {
+                try {
+                    const safeSlug = partnerSlug.replace(/[^A-Za-z0-9_-]+/g, '');
+                    const response = await fetch(`configs/${safeSlug}.json`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        state = data;
+                        showNotification("Configuration chargée avec succès !");
+                    } else {
+                        console.error("Configuration introuvable sur le serveur.");
+                    }
+                } catch (error) {
+                    console.error("Erreur lors du chargement de la config :", error);
+                }
+            }
             syncFormFieldsFromState();
             renderProducts();
             renderFaq();
             updatePreview();
         });
 
-        // Synchroniser les champs simples du formulaire à partir de l'état
         function syncFormFieldsFromState() {
+
             document.getElementById('p-name').value = state.partnerName;
             document.getElementById('p-logo').value = state.logoUrl;
             document.getElementById('p-website').value = state.websiteUrl;
@@ -896,8 +1008,8 @@
             document.getElementById('c-light-hex').value = state.colors.light;
         }
 
-        // Navigation par onglets
         function switchTab(event, tabId) {
+
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.form-view').forEach(view => view.classList.remove('active'));
             
@@ -905,8 +1017,8 @@
             document.getElementById(tabId).classList.add('active');
         }
 
-        // Gestion de l'état
         function updateStateField(field, value) {
+
             state[field] = value;
             updatePreview();
         }
@@ -941,8 +1053,8 @@
             }
         }
 
-        // --- GESTION DES PRODUITS ---
         function renderProducts() {
+
             const container = document.getElementById('products-list');
             container.innerHTML = '';
             
@@ -984,8 +1096,8 @@
             updatePreview();
         }
 
-        // --- GESTION DES FAQ ---
         function renderFaq() {
+
             const container = document.getElementById('faq-sections-list');
             container.innerHTML = '';
             
@@ -1099,8 +1211,8 @@
             updatePreview();
         }
 
-        // Outils d'aide pour insérer des balises HTML dans le textarea
         function insertTag(sIndex, qIndex, tag) {
+
             const textarea = document.getElementById(`faq-ans-${sIndex}-${qIndex}`);
             if (!textarea) return;
             
@@ -1122,11 +1234,11 @@
             
             textarea.value = text.substring(0, start) + replacement + text.substring(end);
             
-            // Mise à jour de l'état
             state.faqSections[sIndex].items[qIndex].answer = textarea.value;
+
             
-            // Remise du focus et placement du curseur
             textarea.focus();
+
             textarea.selectionStart = start + replacement.length;
             textarea.selectionEnd = start + replacement.length;
             
@@ -1135,8 +1247,8 @@
 
         // --- APERÇU EN DIRECT & TÉLÉCHARGEMENT ---
 
-        // Switcher de résolution de périphérique
         function switchDevice(btn, mode) {
+
             document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
@@ -1152,8 +1264,8 @@
             }
         }
 
-        // Notification visuelle
         function showNotification(msg) {
+
             const toast = document.getElementById('toast-notif');
             toast.textContent = msg;
             toast.classList.add('show');
@@ -1162,8 +1274,8 @@
             }, 3000);
         }
 
-        // Fonction pour assombrir/éclaircir une couleur hex
         function adjustColorBrightness(hex, percent) {
+
             let R = parseInt(hex.substring(1, 3), 16);
             let G = parseInt(hex.substring(3, 5), 16);
             let B = parseInt(hex.substring(5, 7), 16);
@@ -1183,8 +1295,8 @@
             return `#${rHex}${gHex}${bHex}`;
         }
 
-        // Remplacement dynamique des variables dans les chaînes de caractères
         function interpolate(text) {
+
             if (!text) return '';
             return text
                 .replaceAll('{{NOM_MARCHAND}}', state.partnerName)
@@ -1194,8 +1306,8 @@
                 .replaceAll('{{PAYMENT_URL}}', state.paymentUrl);
         }
 
-        // Compilateur HTML
         function buildFAQPageHTML() {
+
             const p = state;
             const primary = p.colors.primary;
             const accent = p.colors.accent;
@@ -1203,12 +1315,12 @@
             const light = p.colors.light;
             const middle = adjustColorBrightness(primary, 15);
             
-            // Construction des listes de produits
             const productsListHtml = p.products.map(prod => `
+
                 <li>${escapeHtml(interpolate(prod.name))} <span>– ${escapeHtml(interpolate(prod.description))}</span></li>`).join('');
                         
-            // Construction des sections FAQ
             const faqSectionsHtml = p.faqSections.map(sec => {
+
                 const itemsHtml = sec.items.map(item => `
         <div class="faq-item">
             <div class="question">${escapeHtml(interpolate(item.question))}</div>
@@ -1260,7 +1372,7 @@
             color: var(--text);
         }
 
-        /* Barre top avec bouton payer */
+        /* .topbar */
         .topbar {
             background: var(--bleu-marine);
             display: flex;
@@ -1370,8 +1482,8 @@
             padding: 0 20px 40px;
         }
 
-        /* Section présentation */
         .nl-section {
+
             background: var(--white);
             border-radius: 8px;
             box-shadow: var(--shadow);
@@ -1437,8 +1549,8 @@
             transform: translateY(-1px);
         }
 
-        /* FAQ */
         .faq-item {
+
             background: var(--white);
             border-radius: 8px;
             margin-bottom: 10px;
@@ -1562,8 +1674,8 @@
             background: var(--bleu-moyen);
         }
 
-        /* Bloc bienvenue espace de paiement */
         .welcome-block {
+
             background: var(--white);
             border-radius: 8px;
             box-shadow: var(--shadow);
@@ -1590,8 +1702,8 @@
             color: #4a5568;
         }
 
-        /* Mentions légales footer */
         .footer-legal {
+
             margin-top: 12px;
             font-size: 12px;
             color: var(--muted);
@@ -1671,20 +1783,20 @@
 </html>`;
         }
 
-        // Mettre à jour l'iframe d'aperçu
         function updatePreview() {
+
             const iframe = document.getElementById('preview-iframe');
             const htmlContent = buildFAQPageHTML();
             
-            // Écriture dynamique du contenu dans l'iframe
             const doc = iframe.contentDocument || iframe.contentWindow.document;
+
             doc.open();
             doc.write(htmlContent);
             doc.close();
         }
 
-        // Déclencher le téléchargement du fichier HTML autonome
         function downloadFAQFile() {
+
             const htmlContent = buildFAQPageHTML();
             const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8;' });
             
@@ -1703,8 +1815,8 @@
             }
         }
 
-        // --- EXPORT / IMPORT CONFIGURATION JSON ---
         function exportConfig() {
+
             const dataStr = JSON.stringify(state, null, 4);
             const blob = new Blob([dataStr], { type: 'application/json;charset=utf-8;' });
             
@@ -1749,12 +1861,68 @@
             };
             reader.readAsText(file);
             
-            // Reset input so it triggers again on same file
             event.target.value = '';
+
         }
 
-        // --- OUTILS DE SÉCURITÉ / DIVERS ---
+        async function publishConfigToServer() {
+
+            if (!state.partnerName || state.partnerName.trim() === "") {
+                alert("Veuillez renseigner le nom du partenaire avant de publier.");
+                return;
+            }
+            
+            try {
+                const response = await fetch('save_config.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(state)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+
+                    const origin = window.location.origin;
+                    const path = window.location.pathname;
+                    const basePath = path.substring(0, path.lastIndexOf('/'));
+                    const faqUrl = origin + basePath + '/faq.html?partner=' + result.slug;
+                    
+                    document.getElementById('pub-partner-name').textContent = state.partnerName;
+                    document.getElementById('pub-link-input').value = faqUrl;
+                    document.getElementById('publish-modal').classList.add('show');
+                } else {
+                    alert("Erreur lors de la publication : " + result.message);
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Impossible de contacter le serveur de publication. Vérifiez que 'save_config.php' est bien hébergé dans le même dossier.");
+            }
+        }
+
+        function closePublishModal() {
+            document.getElementById('publish-modal').classList.remove('show');
+        }
+
+        function copyPublishedLink() {
+            const linkInput = document.getElementById('pub-link-input');
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999);
+
+            
+            try {
+                navigator.clipboard.writeText(linkInput.value);
+                showNotification("Lien copié dans le presse-papiers !");
+            } catch (err) {
+                document.execCommand('copy');
+
+                showNotification("Lien copié !");
+            }
+        }
+
         function escapeHtml(text) {
+
             if (!text) return '';
             return text
                 .replace(/&/g, "&amp;")

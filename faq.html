@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>FAQ Clients – Kreancia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <style id="dynamic-theme">
+        :root {
+            --bleu-marine: #00276A;
+            --bleu-header: #0050C8;
+            --bleu-moyen: #0060E0;
+            --bleu-clair: #00AEEF;
+            --orange: #F5821F;
+            --bg: #F4F6F9;
+            --white: #ffffff;
+            --text: #333333;
+            --muted: #6D6E71;
+            --border: #dde3ed;
+            --shadow: 0 4px 20px rgba(0, 39, 106, 0.09);
+        }
+    </style>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        .topbar {
+
+            background: var(--bleu-marine);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 24px;
+        }
+
+        .btn-payer {
+            background: var(--orange);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 9px 20px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            transition: background 0.2s, transform 0.1s;
+            display: inline-block;
+        }
+
+        .btn-payer:hover {
+            background: #e06b0a;
+            transform: translateY(-1px);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--bleu-header) 0%, var(--bleu-moyen) 100%);
+            color: white;
+            padding: 44px 20px 36px;
+            text-align: center;
+            border-bottom: 4px solid var(--orange);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -80px;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -60px;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .header-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 22px;
+        }
+
+        .logo-block img {
+            height: 52px;
+            width: auto;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .logo-kreancia {
+            height: 44px !important;
+        }
+
+        .logo-separator {
+            width: 1px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        header p {
+            opacity: 0.85;
+            font-size: 15px;
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 40px auto;
+            padding: 0 20px 40px;
+        }
+
+        .partner-section {
+
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 26px 28px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--bleu-clair);
+        }
+
+        .partner-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--bleu-header);
+            margin-bottom: 10px;
+        }
+
+        .partner-section p {
+            font-size: 14.5px;
+            line-height: 1.75;
+            color: #4a5568;
+            margin-bottom: 14px;
+        }
+
+        .partner-section ul {
+            list-style: none;
+            margin: 0 0 20px 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .partner-section ul li {
+            background: #EEF4FF;
+            color: var(--bleu-header);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .partner-section ul li span {
+            font-weight: 400;
+            color: var(--muted);
+        }
+
+        .btn-partner {
+            display: inline-block;
+            background: var(--bleu-header);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 10px 22px;
+            border-radius: 4px;
+            letter-spacing: 0.4px;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-partner:hover {
+            background: var(--bleu-moyen);
+            transform: translateY(-1px);
+        }
+
+        .faq-item {
+
+            background: var(--white);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid transparent;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+        }
+
+        .faq-item:hover {
+            border-left-color: var(--bleu-clair);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(0, 39, 106, 0.13);
+        }
+
+        .faq-item.active {
+            border-left-color: var(--orange);
+        }
+
+        .faq-item.active .question {
+            background: #f7faff;
+        }
+
+        .question {
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 600;
+            font-size: 15.5px;
+            padding: 17px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            user-select: none;
+            color: var(--bleu-header);
+        }
+
+        .question::after {
+            content: '+';
+            font-size: 22px;
+            color: var(--orange);
+            flex-shrink: 0;
+            transition: transform 0.3s;
+            line-height: 1;
+            font-weight: 400;
+        }
+
+        .faq-item.active .question::after {
+            transform: rotate(45deg);
+        }
+
+        .answer {
+            display: none;
+            padding: 14px 20px 18px;
+            line-height: 1.75;
+            font-size: 14.5px;
+            color: #4a5568;
+            border-top: 1px solid var(--border);
+        }
+
+        .faq-item.active .answer {
+            display: block;
+        }
+
+        .answer a {
+            color: var(--bleu-moyen);
+            text-decoration: underline;
+        }
+
+        .answer strong {
+            color: var(--bleu-header);
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: var(--white);
+            background: var(--bleu-header);
+            display: inline-block;
+            padding: 5px 14px 4px;
+            border-radius: 3px;
+            margin: 30px 0 12px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 28px 20px;
+            font-size: 13px;
+            color: var(--muted);
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn-kreancia {
+            display: inline-block;
+            background: var(--bleu-header);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 10px 22px;
+            border-radius: 4px;
+            letter-spacing: 0.4px;
+            transition: background 0.2s;
+        }
+
+        .btn-kreancia:hover {
+            background: var(--bleu-moyen);
+        }
+
+        .welcome-block {
+
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 26px 28px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--orange);
+        }
+
+        .welcome-block h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        .welcome-block h2 span {
+            color: var(--bleu-header);
+        }
+
+        .welcome-block p {
+            font-size: 14.5px;
+            line-height: 1.75;
+            color: #4a5568;
+        }
+
+        .footer-legal {
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.6;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .status-container {
+
+            max-width: 500px;
+            margin: 100px auto;
+            text-align: center;
+            padding: 40px 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .status-container h2 {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 16px;
+            color: #EF4444;
+        }
+        .status-container.loading h2 {
+            color: #4F46E5;
+        }
+        .status-container p {
+            font-size: 15px;
+            color: #64748B;
+            line-height: 1.6;
+        }
+        .status-container .btn {
+            display: inline-block;
+            margin-top: 24px;
+            background: #4F46E5;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app-root">
+        <div class="status-container loading">
+            <h2>Chargement en cours...</h2>
+            <p>Veuillez patienter pendant la récupération des informations de votre FAQ.</p>
+        </div>
+    </div>
+
+    <script>
+        function escapeHtml(text) {
+
+            if (!text) return '';
+            return text
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function adjustColorBrightness(hex, percent) {
+
+            let R = parseInt(hex.substring(1, 3), 16);
+            let G = parseInt(hex.substring(3, 5), 16);
+            let B = parseInt(hex.substring(5, 7), 16);
+
+            R = parseInt(R * (100 + percent) / 100);
+            G = parseInt(G * (100 + percent) / 100);
+            B = parseInt(B * (100 + percent) / 100);
+
+            R = (R < 255) ? R : 255;
+            G = (G < 255) ? G : 255;
+            B = (B < 255) ? B : 255;
+
+            const rHex = R.toString(16).padStart(2, '0');
+            const gHex = G.toString(16).padStart(2, '0');
+            const bHex = B.toString(16).padStart(2, '0');
+
+            return `#${rHex}${gHex}${bHex}`;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const partnerSlug = urlParams.get('partner');
+
+        if (!partnerSlug) {
+            showError("Paramètre manquant", "Aucun partenaire n'a été spécifié dans l'adresse de la page (ex: ?partner=norwegian-lab).");
+        } else {
+            loadFAQ(partnerSlug);
+        }
+
+        function showError(title, message) {
+            document.body.classList.add('loaded');
+            document.getElementById('app-root').innerHTML = `
+                <div class="status-container">
+                    <h2>${escapeHtml(title)}</h2>
+                    <p>${escapeHtml(message)}</p>
+                    <a href="https://kreancia.com" class="btn">Retour sur Kreancia</a>
+                </div>
+            `;
+        }
+
+        async function loadFAQ(slug) {
+            try {
+                const safeSlug = slug.replace(/[^A-Za-z0-9_-]+/g, '');
+
+                const response = await fetch(`configs/${safeSlug}.json`);
+                
+                if (!response.ok) {
+                    throw new Error("Configuration introuvable");
+                }
+                
+                const data = await response.json();
+                renderPage(data);
+            } catch (error) {
+                console.error(error);
+                showError("FAQ non disponible", "La page d'aide pour ce partenaire n'a pas pu être trouvée. Veuillez vérifier le lien ou contacter Kreancia.");
+            }
+        }
+
+        function renderPage(data) {
+
+            const primary = data.colors.primary;
+            const accent = data.colors.accent;
+            const dark = data.colors.dark;
+            const light = data.colors.light;
+            const middle = adjustColorBrightness(primary, 15);
+
+            document.getElementById('dynamic-theme').innerHTML = `
+                :root {
+                    --bleu-marine: ${dark};
+                    --bleu-header: ${primary};
+                    --bleu-moyen: ${middle};
+                    --bleu-clair: ${light};
+                    --orange: ${accent};
+                    --bg: #F4F6F9;
+                    --white: #ffffff;
+                    --text: #333333;
+                    --muted: #6D6E71;
+                    --border: #dde3ed;
+                    --shadow: 0 4px 20px rgba(0, 39, 106, 0.09);
+                }
+            `;
+
+            document.title = `FAQ – Abonnement ${data.partnerName}`;
+
+
+            function interpolate(text) {
+
+                if (!text) return '';
+                return text
+                    .replaceAll('{{NOM_MARCHAND}}', data.partnerName)
+                    .replaceAll('{{MONTANT}}', data.amount)
+                    .replaceAll('{{DUREE}}', data.duration)
+                    .replaceAll('{{IBAN}}', data.iban)
+                    .replaceAll('{{PAYMENT_URL}}', data.paymentUrl);
+            }
+
+            const productsHtml = data.products && data.products.length > 0
+
+                ? `<ul>${data.products.map(p => `<li>${escapeHtml(interpolate(p.name))} <span>– ${escapeHtml(interpolate(p.description))}</span></li>`).join('')}</ul>`
+                : '';
+
+            let faqHtml = '';
+
+            if (data.faqSections && data.faqSections.length > 0) {
+                data.faqSections.forEach(section => {
+                    faqHtml += `<div class="section-title">${escapeHtml(interpolate(section.title))}</div>`;
+                    if (section.items && section.items.length > 0) {
+                        section.items.forEach(item => {
+                            faqHtml += `
+                                <div class="faq-item">
+                                    <div class="question">${escapeHtml(interpolate(item.question))}</div>
+                                    <div class="answer">${interpolate(item.answer)}</div>
+                                </div>
+                            `;
+                        });
+                    }
+                });
+            }
+
+            const html = `
+
+                <div class="topbar">
+                    <a href="${escapeHtml(data.paymentUrl)}" class="btn-payer" target="_blank">💳 Payez votre dette</a>
+                </div>
+
+                <header>
+                    <div class="header-logos">
+                        <div class="logo-block">
+                            <img src="${escapeHtml(data.logoUrl)}" alt="${escapeHtml(data.partnerName)}" />
+                        </div>
+                        <div class="logo-separator"></div>
+                        <div class="logo-block">
+                            <img src="https://kreancia.com/wp-content/uploads/2024/08/kreanciabaselinecouleur.png" alt="Kreancia" class="logo-kreancia" />
+                        </div>
+                    </div>
+                    <h1>FAQ – Abonnement ${escapeHtml(data.partnerName)}</h1>
+                    <p>Informations importantes concernant les abonnements, livraisons, facturation et vos droits en tant que client</p>
+                </header>
+
+                <div class="container">
+                    <div class="welcome-block">
+                        <h2>Bienvenue dans l'espace de paiement <span>KREANCIA - ${escapeHtml(data.partnerName.toUpperCase())}</span></h2>
+                        <p>Nous vous avons contacté afin de régulariser un impayé qui nous a été signalé par notre client ${escapeHtml(data.partnerName)}. Notre mandat consiste à vous faciliter le règlement de votre créance le plus simplement et le plus rapidement possible.</p>
+                    </div>
+
+                    <div class="partner-section">
+                        <h2>À propos de ${escapeHtml(data.partnerName)}</h2>
+                        <p>${escapeHtml(data.description)}</p>
+                        ${productsHtml}
+                        <p style="margin-top: 14px;">${escapeHtml(data.commercialContext)}</p>
+                        <a href="${escapeHtml(data.websiteUrl)}" class="btn-partner" target="_blank">Site Web ${escapeHtml(data.partnerName)} ↗</a>
+                    </div>
+
+                    ${faqHtml}
+                </div>
+
+                <footer>
+                    <div class="footer-links">
+                        <a href="https://kreancia.com" class="btn-kreancia" target="_blank">Site Kreancia ↗</a>
+                        <a href="${escapeHtml(data.paymentUrl)}" class="btn-payer" target="_blank">💳 Payez votre dette</a>
+                    </div>
+                    Cette page a été créée dans le but de clarifier les doutes et de répondre aux questions des débiteurs.
+
+                    <div class="footer-legal">
+                        L'entreprise KREANCIA, sis 1A rue de Bouxwiller, 67000 Strasbourg, SAS au capital de 108 000 €, immatriculée
+                        au RCS de STRASBOURG sous le numéro 984 436 238. KREANCIA est une société française, membre de la FIGEC,
+                        dotée du statut de société de recouvrement déclaré auprès du procureur de la république.
+                    </div>
+                </footer>
+            `;
+            document.getElementById('app-root').innerHTML = html;
+
+            
+            document.querySelectorAll(".faq-item").forEach(item => {
+
+                item.querySelector('.question').addEventListener("click", () => {
+                    item.classList.toggle("active");
+                });
+            });
+
+            document.body.classList.add('loaded');
+
+        }
+    </script>
+</body>
+
+</html>
