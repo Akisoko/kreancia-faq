@@ -22,6 +22,7 @@
             --shadow: 0 4px 20px rgba(0, 39, 106, 0.09);
         }
     </style>
+    <meta name="robots" content="noindex, nofollow">
     <style>
         * {
             box-sizing: border-box;
@@ -486,7 +487,15 @@
             try {
                 const safeSlug = slug.replace(/[^A-Za-z0-9_-]+/g, '');
 
-                const response = await fetch(`configs/${safeSlug}.json`);
+                let response = await fetch(`configs/${safeSlug}.json`);
+                
+                // Si le fichier n'est pas trouvé (404), c'est peut-être un ancien lien sans le token.
+                // Pour éviter d'exposer la liste des fichiers au client, on tente un appel à configs/{safeSlug}.json.
+                // Mais si le safeSlug n'a pas de token, et que sur le serveur on a maintenant configs/safeSlug-token.json,
+                // le fetch direct va échouer. Comme le JS client ne peut pas faire de glob dans /configs/ en JS brut,
+                // il chargera configs/safeSlug.json directement. Si les anciens liens pointaient vers configs/safeSlug.json
+                // et que les fichiers physiques n'ont pas encore été renommés, ils se chargeront très bien.
+                // Si on a renommé le fichier avec un token, il faut utiliser l'URL complète avec le token.
                 
                 if (!response.ok) {
                     throw new Error("Configuration introuvable");
@@ -616,14 +625,91 @@
 
             
             document.querySelectorAll(".faq-item").forEach(item => {
+                const questionElement = item.querySelector('.question');
+                questionElement.addEventListener("click", () => {
+                    const isActive = item.classList.toggle("active");
+                    if (isActive) {
+                        // Analytics clic question
+                        sendAnalyticsEvent('faq_click', questionElement.textContent.trim());
+                    }
+                });
+            });
 
-                item.querySelector('.question').addEventListener("click", () => {
-                    item.classList.toggle("active");
+            // Analytics clics sur le bouton de paiement
+            document.querySelectorAll('.btn-payer').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    sendAnalyticsEvent('payment_click', btn.textContent.trim());
                 });
             });
 
             document.body.classList.add('loaded');
 
+            // Initialiser le tracking d'analytics
+            initAnalytics(data.partnerName);
+        }
+
+        // --- CODE TRACKING ANALYTICS ---
+        let sessionStartTime = Date.now();
+        let currentPartner = '';
+
+        function initAnalytics(partnerName) {
+            currentPartner = partnerName;
+            sessionStartTime = Date.now();
+            sendAnalyticsEvent('page_view', 'Page FAQ Chargée');
+
+            // Mesure du temps passé à la fermeture ou changement d'onglet
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden') {
+                    sendTimeSpent();
+                } else {
+                    // Si l'utilisateur revient, on réinitialise le temps
+                    sessionStartTime = Date.now();
+                }
+            });
+        }
+
+        function sendAnalyticsEvent(event, details = '') {
+            if (!currentPartner) return;
+            const data = {
+                partner: currentPartner,
+                event: event,
+                details: details
+            };
+
+            // Utilise fetch en mode "keepalive" pour s'assurer que la requête aboutisse même si l'onglet ferme
+            fetch('log_analytics.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+                keepalive: true
+            }).catch(err => console.warn('Analytics non envoyé :', err));
+        }
+
+        function sendTimeSpent() {
+            const timeSpentSec = Math.round((Date.now() - sessionStartTime) / 1000);
+            if (timeSpentSec > 0 && currentPartner) {
+                const data = JSON.stringify({
+                    partner: currentPartner,
+                    event: 'time_spent',
+                    details: `${timeSpentSec} secondes`
+                });
+
+                // sendBeacon est optimal pour envoyer des statistiques légères à la fermeture d'une page
+                if (navigator.sendBeacon) {
+                    navigator.sendBeacon('log_analytics.php', data);
+                } else {
+                    fetch('log_analytics.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: data,
+                        keepalive: true
+                    });
+                }
+            }
         }
     </script>
 </body>

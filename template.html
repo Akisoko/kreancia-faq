@@ -376,42 +376,30 @@
 
 <body>
 
-    <!-- ============================================================ -->
-    <!--  BARRE TOP                                                    -->
-    <!-- ============================================================ -->
     <div class="topbar">
-        <!-- ✏️ LIEN PAIEMENT : remplacer l'URL si besoin -->
         <a href="https://kreancia.com/espace-de-paiement/" class="btn-payer" target="_blank">💳 Payez votre dette</a>
     </div>
 
-    <!-- ============================================================ -->
-    <!--  HEADER — LOGOS                                               -->
-    <!--  ✏️ Remplacer l'URL du logo marchand (logo-marchand)          -->
-    <!-- ============================================================ -->
+
     <header>
         <div class="header-logos">
             <div class="logo-block">
-                <!-- ✏️ LOGO MARCHAND : remplacer src par l'URL du logo du client -->
                 <img src="{{URL_LOGO_MARCHAND}}" alt="{{NOM_MARCHAND}}" />
             </div>
             <div class="logo-separator"></div>
             <div class="logo-block">
-                <!-- Logo Kreancia — ne pas modifier -->
                 <img src="https://kreancia.com/wp-content/uploads/2024/08/kreanciabaselinecouleur.png" alt="Kreancia"
                     class="logo-kreancia" />
             </div>
         </div>
-        <!-- ✏️ NOM_MARCHAND : nom du client (ex: Norwegian Lab) -->
         <h1>FAQ – Abonnement {{NOM_MARCHAND}}</h1>
         <p>Informations importantes concernant les abonnements, livraisons, facturation et vos droits en tant que client
         </p>
     </header>
 
+
     <div class="container">
 
-        <!-- ============================================================ -->
-        <!--  BLOC BIENVENUE — ne pas modifier le texte                   -->
-        <!-- ============================================================ -->
         <div class="welcome-block">
             <h2>Bienvenue dans l'espace de paiement <span>KREANCIA</span></h2>
             <p>Nous vous avons contacté afin de régulariser un impayé qui nous a été signalé par notre client
@@ -419,34 +407,24 @@
                 simplement et le plus rapidement possible.</p>
         </div>
 
-        <!-- ============================================================ -->
-        <!--  PRÉSENTATION DU MARCHAND                                     -->
-        <!--  ✏️ Adapter : nom, description, produits, URL site            -->
-        <!-- ============================================================ -->
+
         <div class="nl-section">
             <h2>À propos de {{NOM_MARCHAND}}</h2>
-            <!-- ✏️ DESCRIPTION : 1-2 phrases de présentation du marchand -->
             <p>{{DESCRIPTION_MARCHAND}}</p>
-            <!-- ✏️ PRODUITS : liste des gammes/produits du marchand -->
             <ul>
                 <li>{{PRODUIT_1}} <span>– {{DESCRIPTION_PRODUIT_1}}</span></li>
                 <li>{{PRODUIT_2}} <span>– {{DESCRIPTION_PRODUIT_2}}</span></li>
-                <!-- Ajouter ou supprimer des <li> selon le nombre de produits -->
             </ul>
-            <!-- ✏️ CONTEXTE : phrase de contexte sur le modèle commercial -->
             <p>{{CONTEXTE_COMMERCIAL}}</p>
-            <!-- ✏️ URL_SITE_MARCHAND : lien vers le site du client -->
             <a href="{{URL_SITE_MARCHAND}}" class="btn-nl" target="_blank">Site Web {{NOM_MARCHAND}} ↗</a>
         </div>
 
-        <!-- ============================================================ -->
-        <!--  FAQ — SECTION : L'ABONNEMENT                                -->
-        <!-- ============================================================ -->
+
         <div class="section-title">L'abonnement</div>
 
         <div class="faq-item">
-            <!-- ✏️ Adapter NOM_MARCHAND dans la question si besoin -->
             <div class="question">Qu'est-ce que l'abonnement {{NOM_MARCHAND}} ?</div>
+
             <div class="answer">
                 Il s'agit d'un service de fourniture régulière de compléments alimentaires, souscrit au moment de la
                 première commande. Le client adhère à un plan de livraisons successives (généralement de 4 ou 6 mois),
@@ -492,10 +470,8 @@
             </div>
         </div>
 
-        <!-- ============================================================ -->
-        <!--  FAQ — SECTION : RÉSILIATION & RETOURS                       -->
-        <!-- ============================================================ -->
         <div class="section-title">Résiliation &amp; retours</div>
+
 
         <div class="faq-item">
             <div class="question">Puis-je annuler quand je veux ?</div>
@@ -515,17 +491,12 @@
             </div>
         </div>
 
-        <!-- ============================================================ -->
-        <!--  FAQ — SECTION : FACTURATION & PAIEMENT                      -->
-        <!--  ✏️ MONTANT : adapter le montant (198 €) si différent         -->
-        <!--  ✏️ DUREE : adapter la durée (4 mois) si différente           -->
-        <!--  ✏️ IBAN : remplacer par le bon IBAN                          -->
-        <!-- ============================================================ -->
         <div class="section-title">Facturation &amp; paiement</div>
 
+
         <div class="faq-item">
-            <!-- ✏️ Adapter le montant dans la question et la réponse -->
             <div class="question">Pourquoi me facture-t-on {{MONTANT}} € ?</div>
+
             <div class="answer">
                 Ce montant correspond à la totalité de l'abonnement souscrit pour {{DUREE}}. L'absence d'annulation
                 valide
@@ -554,11 +525,6 @@
             </div>
         </div>
 
-        <!-- ============================================================ -->
-        <!--  FAQ — SECTION : RECOUVREMENT & CADRE LÉGAL                  -->
-        <!--  ✏️ Adapter les lois selon la nationalité du marchand         -->
-        <!--     Pays européen → garder la Directive + ajouter loi locale  -->
-        <!-- ============================================================ -->
         <div class="section-title">Recouvrement &amp; cadre légal</div>
 
         <div class="faq-item">
@@ -567,23 +533,21 @@
                 Le contrat repose sur l'acceptation valide des Conditions Générales, conformément à la Directive
                 2000/31/CE. En France, s'applique la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie
                 numérique (LCEN), ainsi que le Code de la consommation pour les contrats conclus à distance.
-                <!-- ✏️ Ajouter/remplacer la loi locale du pays du marchand ci-dessous -->
                 En Norvège, la Loi n° 35/2003 – E-handelsloven. Ces textes confèrent pleine validité aux contrats
                 conclus par voie électronique.
             </div>
         </div>
 
+
     </div>
 
-    <!-- ============================================================ -->
-    <!--  FOOTER — ne pas modifier les mentions légales Kreancia       -->
-    <!-- ============================================================ -->
     <footer>
         <div class="footer-links">
             <a href="https://kreancia.com" class="btn-kreancia" target="_blank">Site Kreancia ↗</a>
             <a href="https://kreancia.com/espace-de-paiement/" class="btn-payer" target="_blank">💳 Payez votre
                 dette</a>
         </div>
+
         Cette page a été créée dans le but de clarifier les doutes et de répondre aux questions des débiteurs.
         <div class="footer-legal">
             L'entreprise KREANCIA, sis 1A rue de Bouxwiller, 67000 Strasbourg, SAS au capital de 108 000 €, immatriculée

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>KREANCIA – Générateur de FAQ Partenaire</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
     
     <style>
@@ -682,10 +683,6 @@
             <button class="btn btn-primary" onclick="publishConfigToServer()">
                 ☁️ Publier en ligne
             </button>
-            
-            <button class="btn btn-success" onclick="downloadFAQFile()">
-                🚀 Télécharger FAQ (HTML)
-            </button>
         </div>
     </header>
 
@@ -731,9 +728,9 @@
                     </div>
 
                     <div class="form-section-title" style="margin-top: 30px;">Produits Commercialisés</div>
-                    <div id="products-list">
-
-                    <button class="btn btn-secondary btn-sm" onclick="addProduct()" style="width: 100%;">
+                    <div id="products-list"></div>
+                    
+                    <button class="btn btn-secondary btn-sm" onclick="addProduct()" style="width: 100%; margin-top: 12px; margin-bottom: 20px;">
                         ＋ Ajouter un Produit
                     </button>
                 </div>
@@ -828,9 +825,6 @@
                 </button>
                 <button class="btn btn-primary" onclick="publishConfigToServer()" style="flex: 1;" title="Enregistrer et publier sur le serveur">
                     ☁️ Publier en ligne
-                </button>
-                <button class="btn btn-success btn-sm" onclick="downloadFAQFile()" title="Télécharger le fichier HTML autonome">
-                    🚀 Télécharger HTML
                 </button>
             </div>
         </div>
@@ -955,15 +949,15 @@
 
         let state = JSON.parse(JSON.stringify(defaultData));
 
-
         window.addEventListener('DOMContentLoaded', async () => {
-
             const urlParams = new URLSearchParams(window.location.search);
             const partnerSlug = urlParams.get('partner');
             if (partnerSlug) {
                 try {
                     const safeSlug = partnerSlug.replace(/[^A-Za-z0-9_-]+/g, '');
-                    const response = await fetch(`configs/${safeSlug}.json`);
+                    // On tente d'abord de charger le fichier exact avec le token
+                    let response = await fetch(`configs/${safeSlug}.json`);
+                    
                     if (response.ok) {
                         const data = await response.json();
                         state = data;
@@ -1795,25 +1789,6 @@
             doc.close();
         }
 
-        function downloadFAQFile() {
-
-            const htmlContent = buildFAQPageHTML();
-            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8;' });
-            
-            const filename = `faq-${state.partnerName.toLowerCase().replace(/[^a-z0-9]/g, '-')}.html`;
-            
-            const link = document.createElement("a");
-            if (link.download !== undefined) {
-                const url = URL.createObjectURL(blob);
-                link.setAttribute("href", url);
-                link.setAttribute("download", filename);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                showNotification("Fichier HTML téléchargé avec succès !");
-            }
-        }
 
         function exportConfig() {
 
